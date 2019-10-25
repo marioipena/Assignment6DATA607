@@ -1,0 +1,61 @@
+---
+title: "CUNY SPS - Master of Science in Data Science - DATA607"
+output:
+  html_document:
+    toc: yes
+    toc_depth: 2
+    toc_float: yes
+  word_document:
+    toc: yes
+    toc_depth: '2'
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+### Mario Pena
+### 10/27/2019
+
+
+## Assignment 6: Web APIs
+
+
+**Assignment Description: We will begin by signing up for an API key from the New York Times web site in order to get access to their APIs. We will choose one of the New York Times APIs, construct an interface in R to read in the JSON data, and transform it into an R DataFrame.**
+
+
+
+
+```{r}
+library(dplyr)
+library(jsonlite)
+library(DT)
+
+apiKey <- "api-key=PlwYAWk4NwrD63spNvVJLdfpKC30sB3C"
+
+jsonURL <- "https://api.nytimes.com/svc/mostpopular/v2/emailed/7.json?"
+
+url <- paste0(jsonURL, apiKey)
+
+popular_nyt <- jsonlite::fromJSON(url, flatten = TRUE)
+
+
+popular_nyt2 = data.frame(popular_nyt$results)
+
+
+```
+
+
+## Transform
+
+```{r}
+popular_nyt3 <- select(popular_nyt2, url, adx_keywords, email_count, count_type, section, byline, type, title, published_date, source, updated)
+
+colnames(popular_nyt3) = c("Article_URL", "Keywords", "Email_Count", "Count_Type", "Section", "By", "Type", "Title", "Published_Date", "Source", "Updated")
+
+popular_nyt3 <- popular_nyt3[c("Title", "By", "Section", "Type", "Source", "Article_URL", "Published_Date", "Keywords", "Count_Type", "Email_Count", "Updated" )]
+
+datatable(popular_nyt3)
+
+```
+
+
